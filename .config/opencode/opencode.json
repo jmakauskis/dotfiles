@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "amazon-bedrock/flexport-claude-opus",
+  "small_model": "amazon-bedrock/flexport-claude-haiku",
+  "provider": {
+    "amazon-bedrock": {
+      "options": {
+        "region": "us-east-1",
+        "profile": "ClaudeCode"
+      },
+      "models": {
+        "flexport-claude-opus": {
+          "name": "Flexport Claude Opus",
+          "id": "arn:aws:bedrock:us-east-1:013986332596:application-inference-profile/ra38dmmj0lo1"
+        },
+        "flexport-claude-sonnet": {
+          "name": "Flexport Claude Sonnet",
+          "id": "arn:aws:bedrock:us-east-1:013986332596:application-inference-profile/i0kkhs4vacaj"
+        },
+        "flexport-claude-haiku": {
+          "name": "Flexport Claude Haiku",
+          "id": "arn:aws:bedrock:us-east-1:013986332596:application-inference-profile/ipjns1qlcy7k"
+        }
+      }
+    }
+  }
+}
