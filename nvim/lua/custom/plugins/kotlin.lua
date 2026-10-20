@@ -15,7 +15,7 @@ return {
     event = 'VimEnter',
     config = function()
       local opts = {
-        root_markers = { 'gradlew', 'settings.gradle.kts', 'settings.gradle', 'mvnw' },
+        root_markers = { 'gradlew', 'settings.gradle.kts', 'settings.gradle', 'build.gradle.kts', 'build.gradle', 'mvnw', '.git' },
         jvm_args = { '-Xmx4g', '-XX:+UseG1GC', '-XX:SoftRefLRUPolicyMSPerMB=50' },
         inlay_hints = {
           enabled = true,
@@ -26,24 +26,11 @@ return {
       }
       require('kotlin').setup(opts)
 
-      -- Start the LSP immediately if nvim was opened from a Kotlin project root,
-      -- without waiting for a Kotlin file to be opened first.
-      -- Opens the first .kt file found in a hidden buffer to trigger LSP attach.
-      local root_markers = opts.root_markers
-      local cwd = vim.fn.getcwd()
-      for _, marker in ipairs(root_markers) do
-        if vim.fn.filereadable(cwd .. '/' .. marker) == 1 or vim.fn.isdirectory(cwd .. '/' .. marker) == 1 then
-          vim.defer_fn(function()
-            local kt_file = vim.fn.glob(cwd .. '/**/*.kt', false, true)[1]
-            if kt_file then
-              local buf = vim.fn.bufadd(kt_file)
-              vim.fn.bufload(buf)
-              vim.bo[buf].buflisted = false
-            end
-          end, 100)
-          break
+      vim.schedule(function()
+        if vim.bo.filetype == 'kotlin' and #vim.lsp.get_clients({ name = 'kotlin_lsp', bufnr = 0 }) == 0 then
+          require('kotlin').setup_kotlin_lsp(opts)
         end
-      end
+      end)
     end,
   },
 }

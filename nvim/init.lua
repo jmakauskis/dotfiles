@@ -124,6 +124,12 @@ vim.o.wrap = false
 -- Enable break indent (only applies when wrap is on)
 vim.o.breakindent = true
 
+-- Indentation defaults: 4 spaces. guess-indent.nvim overrides per-project when it can detect.
+vim.o.tabstop = 4
+vim.o.shiftwidth = 4
+vim.o.expandtab = true
+vim.o.smartindent = true
+
 -- Save undo history
 vim.o.undofile = true
 
@@ -178,6 +184,10 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+-- Ctrl+/ toggles comments (terminals send Ctrl+/ as <C-_>). Built-in gcc/gc, no plugin.
+vim.keymap.set('n', '<C-_>', 'gcc', { desc = 'Toggle comment line' })
+vim.keymap.set('v', '<C-_>', 'gc', { desc = 'Toggle comment selection' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -688,9 +698,8 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {},
         -- gopls = {},
-        -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -700,6 +709,21 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
+        pyright = {
+          before_init = function(_, config)
+            local venv = vim.fs.find('.venv', {
+              path = config.root_dir,
+              upward = true,
+              type = 'directory',
+            })[1]
+
+            if venv then
+              config.settings.python.pythonPath = venv .. '/bin/python'
+            end
+          end,
+        },
+        ruff = {},
+
         vtsls = {
           settings = {
             typescript = {
@@ -771,26 +795,28 @@ require('lazy').setup({
         'prettierd',
         'vtsls',
         'eslint-lsp',
+        { 'kotlin-lsp', auto_update = true },
       })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+      require('mason-tool-installer').setup {
+        ensure_installed = ensure_installed,
+        debounce_hours = 24,
+      }
+
+      for server_name, server in pairs(servers) do
+        -- This handles overriding only values explicitly passed
+        -- by the server configuration above. Useful when disabling
+        -- certain features of an LSP (for example, turning off formatting for ts_ls)
+        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+        vim.lsp.config(server_name, server)
+        vim.lsp.enable(server_name)
+      end
 
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-        automatic_installation = false,
-        handlers = {
-          function(server_name)
-            -- kotlin_lsp is managed by kotlin.nvim, skip it here to avoid two instances
-            if server_name == 'kotlin_lsp' then return end
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
+        -- Servers are enabled explicitly from the `servers` table above. Auto-enabling
+        -- every installed Mason LSP also starts kotlin_lsp, which conflicts with kotlin.nvim.
+        automatic_enable = false,
       }
-
     end,
   },
 
@@ -826,9 +852,9 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        python = { 'ruff_format' },
         -- kotlin = { 'ktlint' }, -- Disabled: use LSP formatter instead
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
@@ -1004,22 +1030,51 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    lazy = false,
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'javascript', 'typescript', 'tsx', 'json', 'css' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'cpp',
+        'css',
+        'diff',
+        'dockerfile',
+        'html',
+        'javascript',
+        'json',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'python',
+        'query',
+        'toml',
+        'tsx',
+        'typescript',
+        'vim',
+        'vimdoc',
+        'yaml',
       },
-      indent = { enable = true, disable = { 'ruby' } },
     },
+    config = function(_, opts)
+      require('nvim-treesitter').install(opts.ensure_installed)
+
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('kickstart-treesitter', { clear = true }),
+        callback = function(event)
+          local filetype = vim.bo[event.buf].filetype
+          local language = vim.treesitter.language.get_lang(filetype) or filetype
+          if vim.tbl_contains(opts.ensure_installed, language) then
+            local parser_available = pcall(vim.treesitter.start, event.buf, language)
+            if parser_available then
+              vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end
+          end
+        end,
+      })
+    end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --

@@ -60,7 +60,7 @@ inner.horizontal = 0
 inner.vertical =   0
 outer.left =       0
 outer.bottom =     0
-outer.top =        [{ monitor."LG HDR 4K" = 32 }, { monitor."Built-in Retina Display" = 0 }, 32]
+outer.top =        [{ monitor."LG HDR 4K" = 0 }, { monitor."Built-in Retina Display" = 0 }, 0]
 outer.right =      0
 
 # 'main' binding mode declaration
@@ -157,13 +157,15 @@ alt-shift-l = ['join-with right', 'mode main']
 
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
-run = []
+run = ['layout floating']
 
 [workspace-to-monitor-force-assignment]
-    1 = 'main'                           # Monitor sequence number from left to right. 1-based indexing
-    2 = 'main'                       # Main monitor
-    3 = 'main'                  # Non-main monitor in case when there are only two monitors
-    4 = 'main'                   # Case insensitive regex substring
-    5 = 'main'  # Case insensitive regex match
-    6 = 'secondary'  # Case insensitive regex match
-                                     #   The first matching pattern will be used
+    1 = ['^(?!Built-in Retina Display$).+', 'main']
+    2 = ['^(?!Built-in Retina Display$).+', 'main']
+    3 = ['^(?!Built-in Retina Display$).+', 'main']
+    4 = ['^(?!Built-in Retina Display$).+', 'main']
+    5 = ['^(?!Built-in Retina Display$).+', 'main']
+    6 = 'Built-in Retina Display'
+    7 = 'Built-in Retina Display'
+    8 = 'Built-in Retina Display'
+    9 = 'Built-in Retina Display'

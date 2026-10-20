@@ -1,27 +1,728 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "amazon-bedrock/flexport-claude-opus",
-  "small_model": "amazon-bedrock/flexport-claude-haiku",
+  "enabled_providers": [
+    "fp-gw",
+    "fp-gw-openai",
+    "fp-gw-bedrock",
+    "fp-gw-bedrock-openai",
+    "google.fp-gw"
+  ],
   "provider": {
-    "amazon-bedrock": {
-      "options": {
-        "region": "us-east-1",
-        "profile": "ClaudeCode"
-      },
+    "fp-gw": {
       "models": {
-        "flexport-claude-opus": {
-          "name": "Flexport Claude Opus",
-          "id": "arn:aws:bedrock:us-east-1:013986332596:application-inference-profile/ra38dmmj0lo1"
+        "dynamic/deepseek-v4-flash-0731": {
+          "attachment": false,
+          "limit": {
+            "context": 1048576,
+            "output": 384000
+          },
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "DeepSeek V4 Flash",
+          "options": {
+            "reasoningEffort": "max"
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "disabled": true
+            },
+            "low": {
+              "disabled": true
+            },
+            "max": {
+              "reasoningEffort": "max"
+            },
+            "medium": {
+              "disabled": true
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "disabled": true
+            }
+          }
         },
-        "flexport-claude-sonnet": {
-          "name": "Flexport Claude Sonnet",
-          "id": "arn:aws:bedrock:us-east-1:013986332596:application-inference-profile/i0kkhs4vacaj"
+        "dynamic/glm-5.3-flash": {
+          "attachment": true,
+          "limit": {
+            "context": 1048576,
+            "output": 131072
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "GLM 5.3 Flash",
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "disabled": true
+            },
+            "low": {
+              "disabled": true
+            },
+            "max": {
+              "disabled": true
+            },
+            "medium": {
+              "disabled": true
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "disabled": true
+            }
+          }
         },
-        "flexport-claude-haiku": {
-          "name": "Flexport Claude Haiku",
-          "id": "arn:aws:bedrock:us-east-1:013986332596:application-inference-profile/ipjns1qlcy7k"
+        "dynamic/qwen3.8-27b": {
+          "attachment": true,
+          "limit": {
+            "context": 262144,
+            "output": 262144
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "Qwen3.8",
+          "options": {
+            "reasoningEffort": "xhigh"
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "disabled": true
+            },
+            "low": {
+              "disabled": true
+            },
+            "max": {
+              "disabled": true
+            },
+            "medium": {
+              "disabled": true
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
+          }
+        },
+        "grok/grok-4.7": {
+          "attachment": true,
+          "limit": {
+            "context": 500000,
+            "output": 500000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "Grok 4.7",
+          "options": {
+            "reasoningEffort": "high"
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "low": {
+              "disabled": true
+            },
+            "max": {
+              "disabled": true
+            },
+            "medium": {
+              "disabled": true
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
+          }
         }
+      },
+      "name": "FP GW",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "",
+        "baseURL": "https://ai-gw-coding.flexport.io/compat"
       }
+    },
+    "fp-gw-bedrock": {
+      "models": {
+        "global.anthropic.claude-fable-5-1": {
+          "attachment": true,
+          "limit": {
+            "context": 1000000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "Claude Fable 5.1",
+          "options": {
+            "effort": "xhigh",
+            "thinking": {
+              "display": "summarized",
+              "type": "adaptive"
+            }
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "effort": "high",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            },
+            "low": {
+              "disabled": true
+            },
+            "max": {
+              "effort": "max",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            },
+            "medium": {
+              "disabled": true
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "effort": "xhigh",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            }
+          }
+        },
+        "global.anthropic.claude-opus-5-5": {
+          "attachment": true,
+          "limit": {
+            "context": 1000000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "Claude Opus 5.5",
+          "options": {
+            "effort": "medium",
+            "thinking": {
+              "display": "summarized",
+              "type": "adaptive"
+            }
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "effort": "high",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            },
+            "low": {
+              "effort": "low",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            },
+            "max": {
+              "effort": "max",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            },
+            "medium": {
+              "effort": "medium",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "effort": "xhigh",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            }
+          }
+        },
+        "global.anthropic.claude-sonnet-5": {
+          "attachment": true,
+          "limit": {
+            "context": 1000000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "Claude Sonnet 5",
+          "options": {
+            "effort": "high",
+            "thinking": {
+              "display": "summarized",
+              "type": "adaptive"
+            }
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "effort": "high",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            },
+            "low": {
+              "effort": "low",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            },
+            "max": {
+              "effort": "max",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            },
+            "medium": {
+              "effort": "medium",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "effort": "xhigh",
+              "thinking": {
+                "display": "summarized",
+                "type": "adaptive"
+              }
+            }
+          }
+        }
+      },
+      "name": "FP GW - Bedrock",
+      "npm": "@ai-sdk/anthropic",
+      "options": {
+        "apiKey": "",
+        "baseURL": "https://ai-gw-coding.flexport.io/aws-bedrock/bedrock-runtime/us-east-1/anthropic/v1"
+      }
+    },
+    "fp-gw-bedrock-openai": {
+      "models": {
+        "global.moonshotai.kimi-k3": {
+          "attachment": true,
+          "limit": {
+            "context": 1000000,
+            "output": 131072
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "Kimi K3",
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "disabled": true
+            },
+            "low": {
+              "disabled": true
+            },
+            "max": {
+              "disabled": true
+            },
+            "medium": {
+              "disabled": true
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "disabled": true
+            }
+          }
+        }
+      },
+      "name": "FP GW - Bedrock OpenAI",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "",
+        "baseURL": "https://ai-gw-coding.flexport.io/aws-bedrock/bedrock-runtime/us-east-1/openai/v1"
+      }
+    },
+    "fp-gw-openai": {
+      "models": {
+        "gpt-5.6-terra": {
+          "attachment": true,
+          "limit": {
+            "context": 1050000,
+            "input": 922000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "GPT 5.6 Terra",
+          "options": {
+            "reasoningEffort": "high"
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "low": {
+              "disabled": true
+            },
+            "max": {
+              "disabled": true
+            },
+            "medium": {
+              "disabled": true
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "disabled": true
+            }
+          }
+        },
+        "gpt-6-astra": {
+          "attachment": true,
+          "limit": {
+            "context": 1050000,
+            "input": 922000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "GPT 6 Astra",
+          "options": {
+            "reasoningEffort": "high"
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "max": {
+              "reasoningEffort": "max"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
+          }
+        },
+        "gpt-6-luna": {
+          "attachment": true,
+          "limit": {
+            "context": 1050000,
+            "input": 922000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "GPT 6 Luna",
+          "options": {
+            "reasoningEffort": "max"
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "max": {
+              "reasoningEffort": "max"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
+          }
+        },
+        "gpt-6-sol": {
+          "attachment": true,
+          "limit": {
+            "context": 1050000,
+            "input": 922000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "GPT 6 Sol",
+          "options": {
+            "reasoningEffort": "high"
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "low": {
+              "disabled": true
+            },
+            "max": {
+              "reasoningEffort": "max"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
+          }
+        }
+      },
+      "name": "FP GW - OpenAI",
+      "npm": "@ai-sdk/openai",
+      "options": {
+        "apiKey": "",
+        "baseURL": "https://ai-gw-coding.flexport.io/openai/v1"
+      }
+    },
+    "google.fp-gw": {
+      "models": {
+        "dynamic/gemini-3.8-flash": {
+          "attachment": true,
+          "limit": {
+            "context": 1048576,
+            "output": 65536
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "Gemini 3.8 Flash",
+          "options": {
+            "reasoningEffort": "high"
+          },
+          "reasoning": true,
+          "variants": {
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "low": {
+              "disabled": true
+            },
+            "max": {
+              "disabled": true
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "none": {
+              "disabled": true
+            },
+            "xhigh": {
+              "disabled": true
+            }
+          }
+        }
+      },
+      "name": "FP GW - Gemini",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "",
+        "baseURL": "https://ai-gw-coding.flexport.io/compat"
+      }
+    }
+  },
+  "mcp": {
+    "buildkite": {
+      "type": "remote",
+      "url": "https://mcp.buildkite.com/mcp"
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "--bun",
+        "chrome-devtools-mcp@latest"
+      ]
+    },
+    "datadog-mcp": {
+      "type": "remote",
+      "url": "https://mcp.datadoghq.com/v1/mcp"
+    },
+    "loki": {
+      "type": "remote",
+      "url": "https://loki-mcp.customs.flexport.io/stream"
+    },
+    "zoekt": {
+      "type": "remote",
+      "url": "https://mcp.zoekt.flexport.io/mcp"
     }
   }
 }
